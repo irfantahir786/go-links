@@ -6,17 +6,15 @@ const page = () => {
     const router = useRouter()
 
     useEffect(() => {
-        const isAdmin = true
-        if (isAdmin) {
+        const isLoggedIn = localStorage.getItem("login") === "yes"
+        if (isLoggedIn) {
             router.replace('/admin/dashboard');
         } else {
             router.replace('/login');
         }
     }, [router]);
 
-    return (
-        <div>page</div>
-    )
+   
 }
 
 export default page

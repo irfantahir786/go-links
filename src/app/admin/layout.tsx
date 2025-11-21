@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { LayoutDashboardIcon, Link2, Menu, Settings } from "lucide-react";
 import Link from "next/link";
@@ -11,29 +11,11 @@ import { Button } from "@/components/ui/button";
 
 
 const pageTitles: Record<string, string> = {
-    "/dashboard": "Dashboard",
-    "/dashboard/links": "Links",
-    "/dashboard/settings": "Settings",
+    "/admin/dashboard": "Dashboard",
+    "/admin/links": "Links",
+    "/admin/settings": "Settings",
 };
 
-function PopoverForm() {
-    return (
-        <>
-            <Popover>
-                <PopoverTrigger asChild>
-                    <Button variant="outline">Open Popover</Button>
-                </PopoverTrigger>
-
-                <PopoverContent className="w-64">
-                    <p className="text-gray-700 text-sm">
-                        This is some info inside a popover. You can put links, buttons, or anything here.
-                    </p>
-                </PopoverContent>
-            </Popover>
-
-        </>
-    )
-}
 
 
 
@@ -121,12 +103,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                                 Profile
                             </Link>
 
-                            <Link
-                                href="/logout"
+                            <a
+                              onClick={()=>{
+                                 redirect("http://localhost:3000/login")
+                              }}
                                 className="block px-2 py-2 rounded hover:bg-gray-100 text-red-600"
                             >
                                 Logout
-                            </Link>
+                            </a>
                         </PopoverContent>
                     </Popover>
 

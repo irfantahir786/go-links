@@ -1,9 +1,28 @@
 'use client'
 import { useState } from "react";
+import { loginAdmin } from "@/services/authServices";
+import { LoginRequestBody } from "@/lib/types";
+import { redirect } from "next/navigation";
 
 export default function Login() {
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
+    const [email, setEmail] = useState("admin@example.com")
+    const [password, setPassword] = useState("password")
+    const [error, setError] = useState("")
+
+    const loginHandler = async (e: React.FormEvent) => {
+        e.preventDefault()
+        const response = await loginAdmin({email, password})
+        if(response.code === 200){
+         //   localStorage.setItem("login", "yes")
+            redirect("admin/dashboard")
+        }
+        else{
+            setError(response.message)
+        }
+    
+        
+
+    }
 
 
 
@@ -17,13 +36,16 @@ export default function Login() {
                     Login
                 </h1>
 
-                <form className="space-y-4">
+                <form className="space-y-4" onSubmit={loginHandler}>
 
                     <div>
                         <label className="block text-sm mb-1 font-medium">Email</label>
                         <input
                             value={email}
-                            onChange={(e) => { setEmail(e.target.value) }}
+                            onChange={(e) => { 
+                                setEmail(e.target.value) 
+                                setError("")
+                            }}
                             type="email"
                             className="w-full px-4 py-2 border rounded-lg outline-none focus:ring focus:ring-gray-300"
                             placeholder="you@example.com"
@@ -34,7 +56,10 @@ export default function Login() {
                         <label className="block text-sm mb-1 font-medium">Password</label>
                         <input
                             value={password}
-                            onChange={(e) => { setPassword(e.target.value) }}
+                            onChange={(e) => {
+                                 setPassword(e.target.value)
+                                   setError("")
+                                 }}
                             type="password"
                             className="w-full px-4 py-2 border rounded-lg outline-none focus:ring focus:ring-gray-300"
                             placeholder="********"
@@ -56,6 +81,10 @@ export default function Login() {
                         Create Account
                     </a>
                 </p>
+
+                <div className="mt-3">
+                    { error && (  <p className="text-center text-red-100">{error}</p> )  }
+                </div>
             </div>
         </main>
     );

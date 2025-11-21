@@ -1,0 +1,56 @@
+import { NextRequest, NextResponse } from "next/server";
+import { NextApiRequest, NextApiResponse } from "next";
+import pool from "@/db/postgresdb";
+
+
+
+type LoginRequestBody = {
+    email: string;
+    password: string;
+  };
+
+
+export async function POST(req : NextRequest) {
+//  const formData = await request.formData();
+    const data: LoginRequestBody = (await req.json()) as LoginRequestBody;
+
+    const {email, password} : LoginRequestBody = data
+
+    if(email === undefined || password === undefined){
+        return new NextResponse(JSON.stringify({ error: "Email or password is invalid" }));
+    }
+
+    try{
+        const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+        
+        if(result.rows.length===0){
+            return new NextResponse(JSON.stringify({ error: "Email not Found" ,}));
+        }
+        else{
+            const user = result.rows[0]
+            if(user.password === data.password){
+                return new NextResponse(JSON.stringify({ error: "login done" ,}));
+            }
+            else{
+                return new NextResponse(JSON.stringify({ error: "Invalid Password" ,}));
+            }
+           
+        }
+       
+    }
+    catch(err){
+
+    }
+
+
+    
+  
+
+   
+
+
+
+
+    //return new NextResponse(JSON.stringify({ error: email }))
+
+}

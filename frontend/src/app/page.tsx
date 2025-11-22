@@ -7,10 +7,10 @@ export default function Home() {
       {/* Hero */}
       <section className="px-6 py-28 bg-gray-800">
         <div className="max-w-5xl mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">
             Shorten. Track. Manage. All in One Dashboard.
           </h1>
-          <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-10">
+          <p className="text-lg md:text-xl text-gray-100 max-w-3xl mx-auto mb-10">
             A modern short-links platform designed for businesses that need clean analytics, custom branding, and a powerful admin panel — not a messy public tool.
           </p>
 
@@ -23,7 +23,7 @@ export default function Home() {
             </a>
             <a
               href="/register"
-              className="px-8 py-3 border border-black rounded-lg font-semibold"
+              className="px-8 py-3 border border-black rounded-lg font-semibold text-white"
             >
               Create Account
             </a>
@@ -124,11 +124,11 @@ export default function Home() {
 
 
 interface HomeProps {
-  title:string
+  title: string
   desc: string
 }
 
-function Feature({ title, desc } : HomeProps) {
+function Feature({ title, desc }: HomeProps) {
   return (
     <div className="text-center">
       <h3 className="text-xl font-semibold mb-2">{title}</h3>

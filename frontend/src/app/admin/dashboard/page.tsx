@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { fetchDashboard, getAllLinks } from "@/services/linkService";
 import { ShortLink, Stats } from "@/lib/types";
+import { toast } from "react-toastify";
 
 export default function DashboardPage() {
 
@@ -20,6 +21,10 @@ export default function DashboardPage() {
 
                 console.log(res.data.data.stats)
                 setStats(res.data.data.stats)
+            }
+            else {
+                setLoading(false)
+                toast("Error getting data")
             }
 
         };

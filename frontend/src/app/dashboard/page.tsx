@@ -1,9 +1,10 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   LinkIcon, Search, 
   TrendingUp, TrendingDown, MousePointerClick, Globe, Users, 
-  ExternalLink, Copy, Trash2, Eye, Clock, Check
+  ExternalLink, Copy, Trash2, Eye, Clock, Check,
+  Clapperboard
   
   } from 'lucide-react';
 import Link from 'next/link';
@@ -31,9 +32,13 @@ interface StatCard {
 
 
 
-type ActivePage = 'dashboard' | 'links';
+
 
 const DashboardPage: React.FC = () => {
+
+    useEffect(()=>{
+
+    }, [])
 
 
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -49,12 +54,10 @@ const DashboardPage: React.FC = () => {
     { id: '5', code: 'discord-inv', url: 'https://discord.gg/example', clicks: 3891, lastClicked: '30 mins ago', createdAt: '2024-03-15', trend: 22.1, isActive: true },
     { id: '6', code: 'github-repo', url: 'https://github.com/example/awesome-project', clicks: 2156, lastClicked: '2 hours ago', createdAt: '2024-04-01', trend: -1.5, isActive: false },
   ]);
-  const stats: StatCard[] = [
-    { title: 'Total Clicks', value: '124,892', change: 12.5, icon: MousePointerClick, color: 'text-blue-500', bgColor: 'bg-blue-500/10' },
-    { title: 'Total Links', value: '1,247', change: 8.2, icon: LinkIcon, color: 'text-purple-500', bgColor: 'bg-purple-500/10' },
-    { title: 'Unique Visitors', value: '45,678', change: -2.4, icon: Users, color: 'text-green-500', bgColor: 'bg-green-500/10' },
-    { title: 'Countries', value: '89', change: 5.1, icon: Globe, color: 'text-orange-500', bgColor: 'bg-orange-500/10' },
-  ];
+  const stats: StatCard=
+    { title: 'Total Clicks', value: '124,892', change: 12.5, icon: MousePointerClick, color: 'text-blue-500', bgColor: 'bg-blue-500/10' }
+   
+
 
  
 
@@ -108,32 +111,23 @@ const DashboardPage: React.FC = () => {
      
             <div className="space-y-6">
               {/* Stats Grid */}
+              
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {stats.map((stat, i) => {
-                  const IconComponent = stat.icon;
-                  return (
+                
                     <div
-                      key={i}
                       className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition-all"
                     >
                       <div className="flex items-start justify-between mb-3">
-                        <div className={`p-3 rounded-xl ${stat.bgColor}`}>
-                          <IconComponent size={22} className={stat.color} />
+                        <div className="p-3 rounded-xl bg-blue-500/10">
+                          {/* <IconComponent size={22} className={stats[0].color} /> */}
+                          <Clapperboard size={22}></Clapperboard>
                         </div>
-                        <div
-                          className={`flex items-center gap-1 text-sm font-medium ${
-                            stat.change >= 0 ? 'text-green-400' : 'text-red-400'
-                          }`}
-                        >
-                          {stat.change >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
-                          {Math.abs(stat.change)}%
-                        </div>
+                       
                       </div>
-                      <p className="text-3xl font-bold">{stat.value}</p>
-                      <p className="text-gray-400 text-sm mt-1">{stat.title}</p>
+                      <p className="text-3xl font-bold">{stats.value}</p>
+                      <p className="text-gray-400 text-sm mt-1">{stats.title}</p>
                     </div>
-                  );
-                })}
+               
               </div>
 
             
@@ -165,7 +159,7 @@ const DashboardPage: React.FC = () => {
               <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden">
                 {/* Table Header */}
                 <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 border-b border-white/10 text-sm font-medium text-gray-400">
-                  <div className="col-span-3">Short Link</div>
+                  <div className="col-span-2">Short Link</div>
                   <div className="col-span-3">Original URL</div>
                   <div className="col-span-1 text-center">Clicks</div>
                   <div className="col-span-2">Last Clicked</div>
@@ -182,7 +176,7 @@ const DashboardPage: React.FC = () => {
                       className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 hover:bg-white/5 transition items-center"
                     >
                       {/* Short Link */}
-                      <div className="col-span-3 flex items-center gap-3">
+                      <div className="col-span-2 flex items-center gap-3">
                         <div className={`p-2 rounded-lg ${link.isActive ? 'bg-gradient-to-br from-blue-500/20 to-purple-500/20' : 'bg-white/5'}`}>
                           <LinkIcon size={16} className={link.isActive ? 'text-blue-400' : 'text-gray-500'} />
                         </div>

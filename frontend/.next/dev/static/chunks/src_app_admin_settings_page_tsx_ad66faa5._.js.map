@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///E:/WebApps/ShortLinks/shortlinks/frontend/src/app/admin/settings/page.tsx"],"sourcesContent":["'use client'\r\nimport React from 'react'\r\n\r\nconst Settings = () => {\r\n    return (\r\n        <div>Settigs</div>\r\n    )\r\n}\r\n\r\nexport default Settings"],"names":[],"mappings":";;;;;AAAA;;AAGA,MAAM,WAAW;IACb,qBACI,6LAAC;kBAAI;;;;;;AAEb;KAJM;uCAMS"}}]
-}

@@ -1,19 +1,13 @@
 'use client'
 import { formatDate } from "@/lib/basicUtils";
+import { ShortLink } from "@/lib/types";
 import { Edit, Check, X, Copy, Trash2, ExternalLink, MousePointerClick, Clock, Calendar } from "lucide-react";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 
-interface ShortLink {
-  code: string;
-  url: string;
-  last_clicked: string;
-  clicks: number;
-  created_at: string;
-  updated_at: string;
-}
+
 
 const LinkViewPage: React.FC = () => {
   const path = usePathname();

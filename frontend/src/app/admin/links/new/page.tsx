@@ -30,7 +30,7 @@ export default function CreateLinkPage() {
 
       const response = await checkCodeAvailablity(code)
       console.log(response.data.status)
-      if (response.data.status === "ok") {
+      if (response.data.status === "empty") {
         setIsAvailable(true)
       }
       else {

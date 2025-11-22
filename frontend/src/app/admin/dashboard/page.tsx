@@ -54,6 +54,13 @@ export default function DashboardPage() {
                     </CardContent>
                 </Card>
 
+                  <Card className="border-none shadow-md bg-white rounded-xl">
+                    <CardContent className="p-5">
+                        <p className="text-gray-500 text-sm">Active Links</p>
+                        <h2 className="text-3xl font-bold text-indigo-600">{stats && stats.active_links}</h2>
+                    </CardContent>
+                </Card>
+
                 <Card className="border-none shadow-md bg-white rounded-xl">
                     <CardContent className="p-5">
                         <p className="text-gray-500 text-sm">Total Clicks</p>
@@ -68,12 +75,7 @@ export default function DashboardPage() {
                     </CardContent>
                 </Card>
 
-                <Card className="border-none shadow-md bg-white rounded-xl">
-                    <CardContent className="p-5">
-                        <p className="text-gray-500 text-sm">Active Links</p>
-                        <h2 className="text-3xl font-bold text-indigo-600">{stats && stats.active_links}</h2>
-                    </CardContent>
-                </Card>
+              
 
             </div>
 

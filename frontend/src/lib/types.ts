@@ -22,11 +22,13 @@ export interface ShortLink {
     clicks: number;
     created_at: string;
     updated_at: string;
+    is_active: boolean
 }
 
 export interface Stats {
 
 
+    total_links : number;
     total_clicks: number;
     today_clicks: number;
     active_links: number;

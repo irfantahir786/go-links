@@ -89,8 +89,8 @@ const updateClick = async (req, res) => {
         const result = await pool.query(
             `UPDATE links
          SET clicks = clicks + 1,
-             last_clicked = NOW(),
-             updated_at = NOW()
+             last_clicked = NOW()
+             
          WHERE code = $1
          RETURNING *`,
             [code]
@@ -152,7 +152,8 @@ const dashboardData = async (req, res) => {
               COUNT(*) AS total_links,
               SUM(clicks) AS total_clicks,
               SUM(CASE WHEN last_clicked::date = CURRENT_DATE THEN 1 ELSE 0 END) AS today_clicks,
-              COUNT(*) FILTER (WHERE clicks > 0) AS active_links
+            COUNT(*) FILTER (WHERE is_active) AS active_links
+
             FROM links
           `);
 

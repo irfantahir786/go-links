@@ -1,7 +1,7 @@
 // 'use server'
 import pool from "@/db/postgresdb";
 
-import { APIResponse, LoginRequestBody, NodeResponse } from "@/lib/types";
+import { APIResponse, ApiResponse, NodeResponse, LinksData } from "@/lib/types";
 import axios from 'axios'
 
 
@@ -57,7 +57,59 @@ export async function updateClick(code: string) {
   }
 }
 
+export async function updateCode(code: string, url: string, is_active: boolean) {
+  let payload;
+  if (url === "") {
+    payload = {
+      code: code,
+      is_active: is_active
+    }
+  }
+  else {
+    payload = {
+      code: code,
+      is_active: is_active
+    }
+  }
+  try {
+    const response = await axios.patch(`http://localhost:3001/links/${code}`, payload, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
+    return ({ data: response.data })
+  } catch (error: any) {
+    return {
+      status: error || "error",
+      data: { data: "error" }
+
+    };
+  }
+}
+
+export async function viewCode(code: string): Promise<NodeResponse> {
+
+  try {
+    const response = await axios.get(`http://localhost:3001/links/view/${code}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    return {
+      status: response.status.toString(),
+      data: response.data
+
+    };
+  } catch (error: any) {
+    return {
+      status: error || "error",
+      data: { data: "error" }
+
+    };
+  }
+}
 
 
 
@@ -106,7 +158,7 @@ export async function getAllLinks(): Promise<NodeResponse> {
     };
   }
 }
-export async function fetchDashboard(): Promise<NodeResponse> {
+export async function fetchDashboard(): Promise<ApiResponse> {
 
   try {
     const response = await axios.get(`http://localhost:3001/links/dashboard`, {
@@ -116,14 +168,14 @@ export async function fetchDashboard(): Promise<NodeResponse> {
     });
 
     return {
-      status: response.status.toString(),
-      data: response.data
+      status: response.data.status.toString(),
+      data: response.data.data
 
     };
   } catch (error: any) {
     return {
       status: error || "error",
-      data: { data: "error" }
+      data: null
 
     };
   }

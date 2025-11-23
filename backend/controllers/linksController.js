@@ -1,14 +1,6 @@
 const db = require('../db/config')
 
-const getAllLinks = async (req, res) => {
-    try {
-        const pool = db();
-        const result = await pool.query("SELECT * from links")
-        res.json({ status: "ok", data: result.rows })
-    } catch (error) {
-        res.json({ status: "fail", data: result.rows })
-    }
-}
+
 
 const checkLinkAvailability = async (req, res) => {
     const code = req.params.code
@@ -38,7 +30,7 @@ const viewLink = async (req, res) => {
             res.json({ status: "empty", data: result.rows })
         }
         else {
-            res.json({ status: "ok", data: result.rows })
+            res.json({ status: "ok", data: result.rows[0] })
         }
 
     } catch (error) {
@@ -86,7 +78,7 @@ const updateClick = async (req, res) => {
         const pool = db();
 
         // Increment clicks if link exists
-        const result = await pool.query(`UPDATE links SET clicks = clicks + 1, last_clicked = NOW() WHERE code=$1 RETURNING *`,  [code] );
+        const result = await pool.query(`UPDATE links SET clicks = clicks + 1, last_clicked = NOW() WHERE code=$1 RETURNING *`, [code]);
 
         if (result.rows.length === 0) {
             // Code not found
@@ -100,9 +92,11 @@ const updateClick = async (req, res) => {
     }
 };
 const updateData = async (req, res) => {
-    console.log("Update Request Received")
-    const { code, url } = req.body;
+    console.log("Update Request Received");
 
+    const { code, url, is_active } = req.body;
+
+    // Validate instantly and properly
     if (!code) {
         return res.status(400).json({ status: "fail", data: "Missing code" });
     }
@@ -110,37 +104,41 @@ const updateData = async (req, res) => {
     try {
         const pool = db();
 
-        // Increment clicks if link exists
         const result = await pool.query(
             `UPDATE links
-             SET url = $1,
-                 updated_at = NOW()
-             WHERE code = $2
-             RETURNING *`,
-            [url, code]
+         SET 
+           url = COALESCE($1, url),
+           is_active = COALESCE($2, is_active),
+           updated_at = NOW()
+         WHERE code = $3
+         RETURNING *`,
+            [url, is_active, code]
         );
 
         if (result.rows.length === 0) {
-            // Code not found
             return res.status(404).json({ status: "not_found", data: null });
         }
 
-        res.status(200).json({ status: "ok", data: result.rows[0] });
+        return res.status(200).json({
+            status: "ok",
+            data: result.rows[0],
+        });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ status: "fail", data: null });
+        return res.status(500).json({ status: "fail", data: null });
     }
 };
 
 
 
+
 const dashboardData = async (req, res) => {
-  try {
-    const pool = db();
+    try {
+        const pool = db();
 
-    const result = await pool.query("SELECT * FROM links");
+        const result = await pool.query("SELECT * FROM links");
 
-    const statsRes = await pool.query(`
+        const statsRes = await pool.query(`
       SELECT
         COUNT(*) AS total_links,
         SUM(clicks) AS total_clicks,
@@ -152,33 +150,33 @@ const dashboardData = async (req, res) => {
       FROM links
     `);
 
-    const s = statsRes.rows[0];
+        const s = statsRes.rows[0];
 
-    const statsArray = [
-      { title: "Total Links", value: s.total_links },
-      { title: "Active Links", value: s.active_links },
-      { title: "Inactive Links", value: s.inactive_links },
-      { title: "Total Clicks", value: s.total_clicks },
- 
-      { title: "Clicked Today", value: s.clicked_today },
-  
-    ];
+        const statsArray = [
+            { title: "Total Links", value: s.total_links },
+            { title: "Active Links", value: s.active_links },
+            { title: "Inactive Links", value: s.inactive_links },
+            { title: "Total Clicks", value: s.total_clicks },
 
-    res.json({
-      status: "ok",
-      data: {
-        links: result.rows,
-        stats: statsArray
-      }
-    });
+            { title: "Clicked Today", value: s.clicked_today },
 
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ status: "fail", data: null });
-  }
+        ];
+
+        res.json({
+            status: "ok",
+            data: {
+                links: result.rows,
+                stats: statsArray
+            }
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ status: "fail", data: null });
+    }
 };
 
 
 module.exports = {
-    getAllLinks, checkLinkAvailability, createLink, viewLink, updateClick, updateData, dashboardData
+    checkLinkAvailability, createLink, viewLink, updateClick, updateData, dashboardData
 }

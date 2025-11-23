@@ -25,11 +25,11 @@ export default function LinksPage() {
 
   useEffect(() => {
     const check = async () => {
-      const res = await getAllLinks();
-      if (res.data.status === "ok") {
-        setLinks(res.data.data)
-        setLoading(false)
-      }
+      // const res = await getAllLinks();
+      // if (res.data.status === "ok") {
+      //   setLinks(res.data.data)
+      //   setLoading(false)
+      // }
 
     };
 

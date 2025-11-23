@@ -15,17 +15,19 @@ export default function DashboardPage() {
     useEffect(() => {
         const check = async () => {
             const res = await fetchDashboard();
-            if (res.data.status === "ok") {
-                setLinks(res.data.data.links)
-                setLoading(false)
+            console.log(res.status)
 
-                console.log(res.data.data.stats)
-                setStats(res.data.data.stats)
-            }
-            else {
-                setLoading(false)
-                toast("Error getting data")
-            }
+            // if (res.data.status === "ok") {
+            //     setLinks(res.data.data.links)
+            //     setLoading(false)
+
+            //     console.log(res.data.data.stats)
+            //     setStats(res.data.data.stats)
+            // }
+            // else {
+            //     setLoading(false)
+            //     toast("Error getting data")
+            // }
 
         };
 
@@ -54,7 +56,7 @@ export default function DashboardPage() {
                     </CardContent>
                 </Card>
 
-                  <Card className="border-none shadow-md bg-white rounded-xl">
+                <Card className="border-none shadow-md bg-white rounded-xl">
                     <CardContent className="p-5">
                         <p className="text-gray-500 text-sm">Active Links</p>
                         <h2 className="text-3xl font-bold text-indigo-600">{stats && stats.active_links}</h2>
@@ -75,7 +77,7 @@ export default function DashboardPage() {
                     </CardContent>
                 </Card>
 
-              
+
 
             </div>
 

@@ -5,7 +5,7 @@ const { getAllLinks, checkLinkAvailability,
 const linksRouter = express.Router()
 
 
-linksRouter.get("/", getAllLinks)
+
 
 linksRouter.get("/view/:code", viewLink)
 linksRouter.post("/updateClick/:code", updateClick)

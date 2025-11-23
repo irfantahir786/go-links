@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link2, Zap, Shield, BarChart3, Globe, ArrowRight, Check, Copy, ExternalLink, Sparkles, ChevronRight, X } from 'lucide-react';
 import Link from 'next/link';
+import { toast } from 'react-toastify';
 
 interface Feature {
   icon: React.ElementType;
@@ -54,25 +55,24 @@ const LandingPage: React.FC = () => {
 
     timeoutRef.current = setTimeout(async () => {
       try {
-        // Simulated API call - replace with your actual endpoint
-        // const res = await fetch(`http://localhost:3001/links/check/${code}`);
-        // const data = await res.json();
-        // setCodeAvailable(data.available);
 
-        await new Promise((resolve) => setTimeout(resolve, 600));
+        const res = await fetch(`http://localhost:3001/links/check/${code}`);
+        const response = await res.json();
+        console.log(response)
 
-        // Dummy logic: codes containing these words are unavailable
-        const reservedWords = ['taken', 'test', 'admin', 'dashboard', 'api', 'login'];
-        const isTaken = reservedWords.some((reserved) =>
-          code.toLowerCase().includes(reserved)
-        );
-
-        setCodeAvailable(!isTaken);
+        if (response.status === "empty") {
+          setCodeAvailable(true);
+          setCheckingCode(false)
+        }
+        else {
+          console.log("outside If")
+          setCodeAvailable(false);
+          setCheckingCode(false)
+        }
       } catch (err) {
-        console.error('Error checking code:', err);
+        console.log('Error checking code:', err);
         setCodeAvailable(null);
-      } finally {
-        setCheckingCode(false);
+        setCheckingCode(false)
       }
     }, 500);
   };
@@ -100,17 +100,24 @@ const LandingPage: React.FC = () => {
 
     try {
       // Simulated API call - replace with your actual endpoint
-      // const res = await fetch('http://localhost:3001/links', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ url: longUrl, code: customCode || undefined }),
-      // });
-      // const data = await res.json();
-      // setShortUrl(`http://localhost:3001/${data.code}`);
+      const res = await fetch('http://localhost:3001/links', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: longUrl, code: customCode || undefined }),
+      });
+      const response = await res.json();
+      console.log(response)
+      if (response.status === "ok") {
+        console.log("Hello")
+        setLongUrl("")
+        setCustomCode("")
+        setShortUrl(`http://localhost:3000/${response.data.code}`);
+      }
+      else {
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      const code = customCode || Math.random().toString(36).substring(2, 8);
-      setShortUrl(`https://short.ly/${code}`);
+      }
+
+      // toast("Short link created")
     } catch (err) {
       setError('Failed to create short link. Please try again.');
     } finally {
@@ -180,9 +187,9 @@ const LandingPage: React.FC = () => {
           <a href="#features" className="hidden md:block text-gray-300 hover:text-white transition">
             Features
           </a>
-         
+
           <Link
-           href={"admin/dashboard"}
+            href={"/dashboard"}
             className="flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 px-5 py-2.5 rounded-xl font-medium transition-all hover:scale-105"
           >
             Dashboard
@@ -341,9 +348,8 @@ const LandingPage: React.FC = () => {
                     </div>
                     <button
                       onClick={copyToClipboard}
-                      className={`p-3 rounded-xl transition-all ${
-                        copied ? 'bg-green-500 text-white' : 'bg-white/10 hover:bg-white/20 text-gray-300'
-                      }`}
+                      className={`p-3 rounded-xl transition-all ${copied ? 'bg-green-500 text-white' : 'bg-white/10 hover:bg-white/20 text-gray-300'
+                        }`}
                       title="Copy to clipboard"
                     >
                       {copied ? <Check size={20} /> : <Copy size={20} />}

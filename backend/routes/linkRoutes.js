@@ -1,5 +1,5 @@
 const express = require('express')
-const { getAllLinks, checkLinkAvailability,
+const { checkLinkAvailability,
     createLink, viewLink, updateClick,
     updateData, dashboardData } = require('../controllers/linksController')
 const linksRouter = express.Router()

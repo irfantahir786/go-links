@@ -17,10 +17,11 @@ export default function Register() {
 
 
     return (
-        <main className="min-h-screen flex flex-col items-center justify-center px-6 bg-slate-700">
+          <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden">
+  <main className="min-h-screen flex flex-col items-center justify-center px-6 bg-slate-700">
 
-            <h1 className="text-6xl text-white font-semibold">ShortLinks</h1>
-            <div className="w-full max-w-md bg-gray-900 p-8 rounded-xl shadow-sm border mt-15">
+         
+            <div className="w-full max-w-md bg-slate-700 p-8 rounded-xl shadow-sm border mt-15">
 
                 <h1 className="text-2xl font-bold  text-center mb-6">
                     Create Account
@@ -68,7 +69,7 @@ export default function Register() {
                     </button>
                 </form>
 
-                <p className="text-center text-sm text-gray-600 mt-4">
+                <p className="text-center text-sm text-gray-200 mt-4">
                     Already have an account?{" "}
                     <a href="/login" className="font-medium underline">
                         Login
@@ -76,5 +77,8 @@ export default function Register() {
                 </p>
             </div>
         </main>
+
+          </div>
+      
     );
 }

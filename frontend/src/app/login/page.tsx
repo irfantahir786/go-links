@@ -3,6 +3,8 @@ import { useState } from "react";
 import { loginAdmin } from "@/services/authServices";
 import { LoginRequestBody } from "@/lib/types";
 import { redirect } from "next/navigation";
+import { Sparkles } from "lucide-react";
+import Link from "next/link";
 
 export default function Login() {
     const [email, setEmail] = useState("admin@example.com")
@@ -29,8 +31,12 @@ export default function Login() {
 
 
     return (
-        <main className="min-h-screen flex items-center justify-center px-6 bg-gray-800">
-            <div className="w-full max-w-md bg-slate-700 p-8 rounded-xl shadow-sm border">
+
+        <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden">
+        <main className="relative z-10 px-6 lg:px-4 pt-3 pb-3">
+            <div className="min-h-screen flex justify-center items-center">
+              
+                     <div className="w-full max-w-md bg-slate-700 p-8 rounded-xl shadow-sm border">
 
                 <h1 className="text-2xl font-bold text-center mb-6">
                     Login
@@ -86,6 +92,18 @@ export default function Login() {
                     { error && (  <p className="text-center text-red-100">{error}</p> )  }
                 </div>
             </div>
-        </main>
+                </div>
+
+       
+        
+      </main>
+        </div>
+
+
+
+
+        // <main className="min-h-screen flex items-center justify-center px-6 bg-gray-800">
+           
+        // </main>
     );
 }

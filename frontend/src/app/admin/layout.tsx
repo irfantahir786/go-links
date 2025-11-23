@@ -30,7 +30,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="flex min-h-screen bg-gray-100">
 
             {/* Sidebar - Desktop */}
-            <aside className="hidden md:block w-64 bg-white shadow-lg">
+            <aside className="hidden md:block w-75 bg-white shadow-lg">
                 <div className="p-6 font-bold text-xl text-indigo-600">ShortLinks</div>
                 <nav className="px-3 space-y-2">
 

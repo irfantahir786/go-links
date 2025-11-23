@@ -72,7 +72,7 @@ export async function updateCode(code: string, url: string, is_active: boolean) 
     }
   }
   try {
-    const response = await axios.patch(`http://localhost:3001/links/${code}`, payload, {
+    const response = await axios.patch(`http://localhost:3001/api/links/${code}`, payload, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -161,7 +161,7 @@ export async function getAllLinks(): Promise<NodeResponse> {
 export async function fetchDashboard(): Promise<ApiResponse> {
 
   try {
-    const response = await axios.get(`http://localhost:3001/links/dashboard`, {
+    const response = await axios.get(`http://localhost:3001/api/links/dashboard`, {
       headers: {
         "Content-Type": "application/json",
       },

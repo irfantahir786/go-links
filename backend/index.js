@@ -10,7 +10,10 @@ const { verifyToken } = require('./utils/jwt')
 
 dotenv.config()
 const app = express()
-app.use(cors())
+app.use(cors({
+    origin: "http://localhost:3000",
+    credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
@@ -26,7 +29,7 @@ app.use("/api/auth", authRouter)
 
 
 const verify = verifyToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiZW1haWxAZ21haWwuY29tIiwiaWF0IjoxNzYzOTYzOTgwfQ.9NyZqVTuTfjUTk0bgiM9MdVBMzk1T4UaRVVIx5mBbHY")
-console.log(verify.user)
+console.log(verify)
 
 
 

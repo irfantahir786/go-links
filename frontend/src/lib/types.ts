@@ -6,8 +6,9 @@ export type LoginRequestBody = {
 
 
 export type APIResponse = {
-    code: number;
+    status: string;
     message: string;
+    token: string
 };
 
 export type NodeResponse = {

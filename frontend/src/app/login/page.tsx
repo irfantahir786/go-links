@@ -3,7 +3,6 @@ import { useState } from "react";
 import { loginUser } from "@/services/authServices";
 import { LoginRequestBody } from "@/lib/types";
 import { redirect } from "next/navigation";
-import { Sparkles } from "lucide-react";
 import Link from "next/link";
 
 export default function Login() {
@@ -13,9 +12,10 @@ export default function Login() {
 
     const loginHandler = async (e: React.FormEvent) => {
         e.preventDefault()
+
         const response = await loginUser({ email, password })
-        if (response.code === 200) {
-            //   localStorage.setItem("login", "yes")
+
+        if (response.status === "ok") {
             redirect("admin/dashboard")
         }
         else {

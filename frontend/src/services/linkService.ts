@@ -161,11 +161,16 @@ export async function getAllLinks(): Promise<NodeResponse> {
 export async function fetchDashboard(): Promise<ApiResponse> {
 
   try {
-    const response = await axios.get(`http://localhost:3001/api/links/dashboard`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await axios.get(
+      "http://localhost:3001/api/dashboard",
+      {
+        withCredentials: true,   // ← this is what makes cookies work
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
 
     return {
       status: response.data.status.toString(),

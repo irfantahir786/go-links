@@ -35,7 +35,13 @@ const loginUser = async (req, res) => {
             email: emailExist.rows[0].email
         }
         const token = generateToken(tokenPayload)
-        res.cookie("token", token)
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: false,         // in dev keep false
+            sameSite: "none",      // REQUIRED for cross-site cookies
+            domain: "localhost",   // ← critical
+            path: "/"
+        });
         return res.status(200).json({
             status: "ok",
             message: "Login Success",

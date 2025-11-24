@@ -7,9 +7,11 @@ import axios from 'axios'
 
 
 
+
 export async function loginUser({ email, password }: LoginRequestBody): Promise<APIResponse> {
 
   try {
+    //   const cookieStore = await cookies()
     const payload = { email, password };
 
     const response = await axios.post("http://localhost:3001/api/auth/login", payload, {
@@ -17,16 +19,18 @@ export async function loginUser({ email, password }: LoginRequestBody): Promise<
         "Content-Type": "application/json",
       },
     });
-
+    //  cookieStore.set("token", response.data.token.toString())
     return {
-      code: response.status,
+      token: response.data.token,
+      status: response.data.status,
       message: response.data.message
 
     };
   } catch (error: any) {
     return {
-      code: error?.response?.status || 500,
-      message: error?.response?.data?.message || "Invalid Credentials"
+      status: error?.response?.status || 500,
+      message: error?.response?.data?.message || "Invalid Credentials",
+      token: ""
 
     };
   }

@@ -4,6 +4,7 @@ const dashboardData = async (req, res) => {
 
     const cookies = req.cookies.token
     console.log(cookies)
+    console.log("In dashboard", req.userId)
 
 
 
@@ -11,7 +12,7 @@ const dashboardData = async (req, res) => {
     try {
         const pool = db();
 
-        const result = await pool.query("SELECT * FROM links");
+        const result = await pool.query("SELECT * FROM links WHERE user_id=$1", [req.userId]);
 
         const statsRes = await pool.query(`
       SELECT
@@ -22,8 +23,8 @@ const dashboardData = async (req, res) => {
         COUNT(*) FILTER (WHERE NOT is_active) AS inactive_links,
         SUM(CASE WHEN last_clicked::date = CURRENT_DATE THEN 1 ELSE 0 END) AS clicked_today
        
-      FROM links
-    `);
+      FROM links WHERE user_id =$1
+    `, [req.userId]);
 
         const s = statsRes.rows[0];
 

@@ -1,6 +1,13 @@
 const db = require('../db/config')
 
 const dashboardData = async (req, res) => {
+
+    const cookies = req.cookies.token
+    console.log(cookies)
+
+
+
+
     try {
         const pool = db();
 

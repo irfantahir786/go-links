@@ -1,11 +1,12 @@
 const express = require('express')
-const { allUser } = require('../controllers/userController')
+const { profile } = require('../controllers/userController')
+const { authMiddleware } = require('../middlewares/authMiddleware')
 const userRouter = express.Router()
 
 
 
 
-userRouter.get("/", allUser)
+userRouter.get("/profile", authMiddleware, profile)
 
 
 module.exports = {

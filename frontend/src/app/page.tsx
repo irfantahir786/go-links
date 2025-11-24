@@ -1,327 +1,157 @@
-'use client'
-import React, { useState, useRef, useEffect } from 'react';
-import { Link2, Zap, Shield, BarChart3, Globe, ArrowRight, Check, Copy, ExternalLink, Sparkles, ChevronRight, X } from 'lucide-react';
-import Link from 'next/link';
-import { toast } from 'react-toastify';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Rocket, Edit3, BarChart2, Users, CheckCircle, Link as LinkIcon, BarChart } from "lucide-react";
+import Link from "next/link";
+import { Logo } from "@/components/icons";
 
-interface Feature {
-  icon: React.ElementType;
-  title: string;
-  desc: string;
-  color: string;
-}
+const features = [
+  {
+    icon: <Edit3 className="h-8 w-8 text-primary" />,
+    title: "Customizable Links",
+    description: "Create memorable and brandable short links with custom aliases that are easy to share.",
+  },
+  {
+    icon: <BarChart2 className="h-8 w-8 text-primary" />,
+    title: "Detailed Analytics",
+    description: "Track every click and gain insights into your audience with our comprehensive analytics dashboard.",
+  },
+  {
+    icon: <Users className="h-8 w-8 text-primary" />,
+    title: "User Management",
+    description: "Collaborate with your team by managing users and their permissions for link creation and tracking.",
+  },
+]
 
-interface Stat {
-  value: string;
-  label: string;
-}
+const howItWorks = [
+  {
+    icon: <CheckCircle className="h-10 w-10 text-primary" />,
+    title: "1. Create Account",
+    description: "Sign up for a free account in seconds. No credit card required.",
+  },
+  {
+    icon: <LinkIcon className="h-10 w-10 text-primary" />,
+    title: "2. Shorten Link",
+    description: "Paste your long URL into our shortener and create a compact link.",
+  },
+  {
+    icon: <BarChart className="h-10 w-10 text-primary" />,
+    title: "3. Track Clicks",
+    description: "Share your new link and watch the real-time analytics on your dashboard.",
+  },
+]
 
-const LandingPage: React.FC = () => {
-  const [longUrl, setLongUrl] = useState<string>('');
-  const [customCode, setCustomCode] = useState<string>('');
-  const [shortUrl, setShortUrl] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
-  const [copied, setCopied] = useState<boolean>(false);
-
-  // Code availability states
-  const [checkingCode, setCheckingCode] = useState<boolean>(false);
-  const [codeAvailable, setCodeAvailable] = useState<boolean | null>(null);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
-
-  // Check code availability with debounce
-  const checkCodeAvailability = (code: string): void => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    if (!code || code.length < 3) {
-      setCodeAvailable(null);
-      setCheckingCode(false);
-      return;
-    }
-
-    setCheckingCode(true);
-    setCodeAvailable(null);
-
-    timeoutRef.current = setTimeout(async () => {
-      try {
-
-        const res = await fetch(`http://localhost:3001/links/check/${code}`);
-        const response = await res.json();
-        console.log(response)
-
-        if (response.status === "empty") {
-          setCodeAvailable(true);
-          setCheckingCode(false)
-        }
-        else {
-          console.log("outside If")
-          setCodeAvailable(false);
-          setCheckingCode(false)
-        }
-      } catch (err) {
-        console.log('Error checking code:', err);
-        setCodeAvailable(null);
-        setCheckingCode(false)
-      }
-    }, 500);
-  };
-
-  const handleCustomCodeChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const value = e.target.value.replace(/[^a-zA-Z0-9-_]/g, '');
-    setCustomCode(value);
-    checkCodeAvailability(value);
-  };
-
-  const handleShorten = async (): Promise<void> => {
-    if (!longUrl) {
-      setError('Please enter a URL');
-      return;
-    }
-
-    if (customCode.length >= 3 && codeAvailable === false) {
-      setError('Please choose an available custom code');
-      return;
-    }
-
-    setLoading(true);
-    setError('');
-    setShortUrl('');
-
-    try {
-      // Simulated API call - replace with your actual endpoint
-      const res = await fetch('http://localhost:3001/links', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: longUrl, code: customCode || undefined }),
-      });
-      const response = await res.json();
-      console.log(response)
-      if (response.status === "ok") {
-        console.log("Hello")
-        setLongUrl("")
-        setCustomCode("")
-        setShortUrl(`http://localhost:3000/${response.data.code}`);
-      }
-      else {
-
-      }
-
-      // toast("Short link created")
-    } catch (err) {
-      setError('Failed to create short link. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const copyToClipboard = (): void => {
-    navigator.clipboard.writeText(shortUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const features: Feature[] = [
-    { icon: Zap, title: 'Lightning Fast', desc: 'Generate short links instantly with our optimized infrastructure', color: 'from-yellow-400 to-orange-500' },
-    { icon: Shield, title: 'Secure & Reliable', desc: 'Enterprise-grade security with 99.9% uptime guarantee', color: 'from-green-400 to-emerald-500' },
-    { icon: BarChart3, title: 'Advanced Analytics', desc: 'Track clicks, locations, devices and more in real-time', color: 'from-blue-400 to-indigo-500' },
-    { icon: Globe, title: 'Custom Domains', desc: 'Use your own branded domain for professional links', color: 'from-purple-400 to-pink-500' },
-  ];
-
-  const stats: Stat[] = [
-    { value: '10M+', label: 'Links Created' },
-    { value: '500M+', label: 'Clicks Tracked' },
-    { value: '99.9%', label: 'Uptime' },
-    { value: '150+', label: 'Countries' },
-  ];
-
-  const getInputBorderClass = (): string => {
-    if (customCode.length >= 3) {
-      if (codeAvailable === true) return 'border-green-500/50 focus:ring-green-500';
-      if (codeAvailable === false) return 'border-red-500/50 focus:ring-red-500';
-    }
-    return 'border-white/20 focus:ring-blue-500';
-  };
-
-  const isSubmitDisabled = (): boolean => {
-    return loading || (customCode.length >= 3 && (checkingCode || codeAvailable === false));
-  };
-
+export default function Home() {
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" />
-        <div
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse"
-          style={{ animationDelay: '1s' }}
-        />
-        <div
-          className="absolute top-1/2 left-1/2 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl animate-pulse"
-          style={{ animationDelay: '2s' }}
-        />
-      </div>
+    <div className="flex flex-col min-h-screen bg-background">
+      <header className="container mx-auto px-4 h-16 flex items-center">
+        <Link href="/" className="flex items-center gap-2">
+          <Logo className="h-8 w-8 text-primary" />
+          <span className="font-bold text-lg">TinyLink</span>
+        </Link>
+        <nav className="ml-auto flex items-center gap-4">
+          <Button asChild variant="ghost" size="sm">
+            <Link href="/login">Login</Link>
+          </Button>
+          <Button asChild size="sm">
+            <Link href="/register">Sign Up</Link>
+          </Button>
+        </nav>
+      </header>
 
-      {/* Navigation */}
-      <nav className="relative z-10 flex items-center justify-between px-6 lg:px-12 py-3">
-        <div className="flex items-center gap-2">
-          <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl">
-            <Link2 size={24} className="text-white" />
-          </div>
-          <span className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-            ShortLink
-          </span>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <a href="#features" className="hidden md:block text-gray-300 hover:text-white transition">
-            Features
-          </a>
-
-         
-          <Link
-            href={"/dashboard"}
-            className="flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 px-5 py-2.5 rounded-xl font-medium transition-all hover:scale-105"
-          >
-            Dashboard
-            <ChevronRight size={18} />
-          </Link>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <main className="relative z-10 px-6 lg:px-4 pt-3 pb-3">
-        <div className="max-w-6xl mx-auto">
-          {/* Badge */}
-          <div className="flex justify-center mb-2">
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-2 rounded-full text-sm">
-              <Sparkles size={16} className="text-yellow-400" />
-              <span className="text-gray-300">Trusted by 100,000+ users worldwide</span>
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="py-20 md:py-32 relative">
+          <div className="absolute inset-0 -z-10 h-full w-full bg-background bg-[radial-gradient(#2d3748_1px,transparent_1px)] [background-size:32px_32px]"></div>
+          <div className="container mx-auto px-4 text-center">
+            <div className="max-w-3xl mx-auto">
+              <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4">
+                Shorten, Share, and Track Your Links
+              </h1>
+              <p className="text-lg md:text-xl text-muted-foreground mb-8">
+                TinyLink is a simple and powerful URL shortener to help you manage your digital presence. Create clean links, monitor their performance, and take control.
+              </p>
+              <div className="flex justify-center gap-4">
+                <Button asChild size="lg">
+                  <Link href="/register">
+                    Get Started for Free
+                    <Rocket className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+              </div>
             </div>
           </div>
+        </section>
 
-          {/* Headline */}
-          <h1 className="text-3xl md:text-5xl font-bold text-center mb-4 leading-tight">
-            <span className="bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
-              Shorten Links,
-            </span>
-            <br />
-            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-              Amplify Results
-            </span>
-          </h1>
-
-          <p className="text-l text-gray-400 text-center max-w-2xl mx-auto mb-4">
-            Transform long, ugly URLs into powerful, trackable short links. Boost your marketing with detailed
-            analytics and custom branding.
-          </p>
-
-          {/* Link Shortener Form */}
-         <div className='flex flex-row justify-center items-center gap-4'>
- <Link
-            href={"/login"}
-            className="flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 px-5 py-2.5 rounded-xl font-medium transition-all hover:scale-105"
-          >
-            Login
-           
-          </Link>
-
-           <Link
-            href={"/dashboard"}
-            className="flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 px-5 py-2.5 rounded-xl font-medium transition-all hover:scale-105"
-          >
-            Register
-          
-          </Link>
-         </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mt-16">
-            {stats.map((stat, i) => (
-              <div key={i} className="text-center">
-                <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                  {stat.value}
-                </div>
-                <div className="text-gray-500 text-sm mt-1">{stat.label}</div>
-              </div>
-            ))}
+        {/* Features Section */}
+        <section id="features" className="py-20 bg-muted/40">
+          <div className="container mx-auto px-4">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold">Powerful Features, Simple Interface</h2>
+              <p className="text-muted-foreground mt-4">
+                Everything you need to build brand recognition and track your link performance.
+              </p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-8">
+              {features.map((feature) => (
+                <Card key={feature.title} className="text-center">
+                  <CardHeader>
+                    <div className="mx-auto bg-primary/10 p-4 rounded-full w-fit">
+                      {feature.icon}
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                    <p className="text-muted-foreground">{feature.description}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
-        </div>
+        </section>
+
+        {/* How It Works Section */}
+        <section id="how-it-works" className="py-20">
+          <div className="container mx-auto px-4">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold">Get Started in 3 Easy Steps</h2>
+              <p className="text-muted-foreground mt-4">
+                TinyLink makes it incredibly easy to start shortening and tracking your URLs.
+              </p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-8 text-center">
+              {howItWorks.map((step) => (
+                <div key={step.title} className="flex flex-col items-center">
+                  {step.icon}
+                  <h3 className="text-xl font-semibold my-4">{step.title}</h3>
+                  <p className="text-muted-foreground">{step.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="py-20 bg-muted/40">
+          <div className="container mx-auto px-4 text-center">
+            <div className="max-w-2xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold">Ready to Take Control of Your Links?</h2>
+              <p className="text-muted-foreground my-6">
+                Join thousands of users who trust TinyLink to manage their links. Sign up now and start creating your branded short URLs in minutes.
+              </p>
+              <Button asChild size="lg">
+                <Link href="/register">
+                  Sign Up for Free
+                  <Rocket className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </section>
       </main>
 
-      {/* Features Section */}
-      <section id="features" className="relative z-10 px-6 lg:px-12 py-20 bg-black/20">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-                Powerful Features
-              </span>
-            </h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              Everything you need to manage, track, and optimize your links
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature, i) => {
-              const IconComponent = feature.icon;
-              return (
-                <div
-                  key={i}
-                  className="group bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all hover:scale-105 hover:shadow-xl"
-                >
-                  <div className={`inline-flex p-3 rounded-xl bg-linear-to-r ${feature.color} mb-4`}>
-                    <IconComponent size={24} className="text-white" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-gray-400 text-sm">{feature.desc}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="relative z-10 px-6 lg:px-12 py-20">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to get started?</h2>
-          <p className="text-gray-400 text-lg mb-8">Join thousands of marketers and developers who trust ShortLink</p>
-          <button
-            onClick={() => (window.location.href = '/dashboard')}
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 px-8 py-4 rounded-xl font-semibold transition-all hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25"
-          >
-            Go to Dashboard
-            <ArrowRight size={20} />
-          </button>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-white/10 px-6 lg:px-12 py-8">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
-              <Link2 size={18} className="text-white" />
-            </div>
-            <span className="font-semibold">ShortLink</span>
-          </div>
-          <p className="text-gray-500 text-sm">© 2025 ShortLink. All rights reserved.</p>
-        </div>
+      <footer className="container mx-auto px-4 h-16 flex items-center justify-center text-sm text-muted-foreground">
+        <p>&copy; {new Date().getFullYear()} TinyLink. All rights reserved.</p>
       </footer>
     </div>
   );
-};
-
-export default LandingPage;
+}
